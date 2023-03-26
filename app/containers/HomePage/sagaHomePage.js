@@ -4,7 +4,7 @@ import * as actions from './actionsHomePage';
 import * as constants from './constantsHomePage';
 
 export function* handleTakeList(action) {
-  const path = 'user/list';
+  const path = 'accounts/list';
   try {
     const res = yield call(axiosPost, path, action.body);
     if (res.status === 200)
@@ -16,12 +16,12 @@ export function* handleTakeList(action) {
 export default function* watchAction() {
   yield takeLatest(constants.TAKELIST, handleTakeList);
   yield takeLatest(constants.ADDACCOUNT, handleAddAccount);
-  yield takeLatest(constants.TAKEROLEGROUP, takeRoleGroup);
   yield takeLatest(constants.EDITACCOUNT, handleEditAccount);
+  yield takeLatest(constants.DELETE, handleDeleteAccount);
 }
 
 export function* handleAddAccount(action) {
-  const path = '/user/v2/add';
+  const path = '/accounts/add';
   try {
     const res = yield call(axiosPost, path, action.body);
     if (res.status === 200)
@@ -30,18 +30,9 @@ export function* handleAddAccount(action) {
     yield put(actions.errorRequest(error));
   }
 }
-export function* takeRoleGroup(action) {
-  const path = '/user/listrolegroup';
-  try {
-    const res = yield call(axiosPost, path, action.body);
-    if (res.status === 200) yield put(actions.takeRoleGroupSuccess(res));
-  } catch (error) {
-    yield put(actions.errorRequest(error));
-  }
-}
 
 export function* handleEditAccount(action) {
-  const path = '/user/v2/editmember';
+  const path = '/accounts/edit';
   try {
     const res = yield call(axiosPut, path, action.body);
     if (res.status === 200)
@@ -50,3 +41,14 @@ export function* handleEditAccount(action) {
     yield put(actions.errorRequest(error));
   }
 }
+export function* handleDeleteAccount(action) {
+  const path = '/accounts/delete';
+  try {
+    const res = yield call(axiosPut, path, action.body);
+    if (res.status === 200)
+      yield put(actions.deleteAccountSuccess(res), action.callback(res));
+  } catch (error) {
+    yield put(actions.errorRequest(error));
+  }
+}
+

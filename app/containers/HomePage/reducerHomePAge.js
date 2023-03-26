@@ -1,12 +1,12 @@
 import produce from 'immer';
 import {
   ADDACCOUNT,
-  ADDACCOUNTSUCCESS, EDITACCOUNT, EDITACCOUNTSUCCESS,
+  ADDACCOUNTSUCCESS, DELETE, DELETESUCCESS, EDITACCOUNT, EDITACCOUNTSUCCESS,
   TAKELIST,
   TAKELISTSUCCESS,
   TAKEROLEGROUP,
-  TAKEROLEGROUPSUCCESS,
-} from './constantsHomePage';
+  TAKEROLEGROUPSUCCESS
+} from "./constantsHomePage";
 
 export const initialState = {
   isLoading: false,
@@ -41,6 +41,12 @@ export const takeListReducer = (state = initialState, action) =>
         draft.isLoading = true;
         break;
       case EDITACCOUNTSUCCESS:
+        draft.isLoading = false;
+        break;
+      case DELETE:
+        draft.isLoading = true;
+        break;
+      case DELETESUCCESS:
         draft.isLoading = false;
         break;
     }

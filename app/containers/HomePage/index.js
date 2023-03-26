@@ -79,22 +79,11 @@ const HomePage = () => {
   const [infoUserEdit, setInfoUserEdit] = useState([]);
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const body = {
-    CurrentPage: 1,
-    HierachyID: 0,
-    IsDesc: false,
-    KeySearch: '',
-    ListUserID: ['0'],
-    PageSize: 120,
-    Phone: '',
-    RoleGroupID: 0,
-    SortCol: 'UserName',
-  };
   useEffect(() => {
     dispatch(
-      actions.takeList(body, res => {
-        setDataSource(res.Users);
-        setDataSearch(res.Users);
+      actions.takeList( res => {
+        setDataSource(res);
+        setDataSearch(res);
       }),
     );
   }, []);
@@ -106,36 +95,93 @@ const HomePage = () => {
     setInfoUserEdit([]);
   };
   const handleOk = info => {
+    if (info.IsActive === true) {
+      info.IsActive = 1;
+      info.Status = "Đang hoạt động"
+    }
+    else {
+      info.IsActive = 0;
+      info.Status = "Không hoạt động"
+    }
+    if (info.RoleID == 2) {
+      info.RoleGroup ="Nhóm Đại Lý"
+    }
+    else {
+      info.RoleGroup ="Nhóm Kỹ Thuật Viên"
+    }
+    const data = {
+      UserName: info.UserName,
+      FullName: info.FullName,
+      Phone: info.Phone,
+      Email: info.Email,
+      Birthday: moment(info.Birthday).format("MM/DD/YYYY"),
+      Address:info.Address,
+      Status: info.Status,
+      RoleID: info.RoleID,
+      RoleGroup: info.RoleGroup,
+      IsActive:info.IsActive
+    }
     dispatch(
-      actions.addAccount(info, () => {
+      actions.addAccount(data, () => {
         dispatch(
-          actions.takeList(body, res => {
-            setDataSource(res.Users);
-            setDataSearch(res.Users);
+          actions.takeList(res => {
+            setDataSource(res);
+            setDataSearch(res);
           }),
         );
       }),
     );
     setIsModalAddOpen(false);
   };
+  // const handeleDelete = () => (
+  //   // <Popconfirm
+  //   //   placement="topLeft"
+  //   //   title={text}
+  //   //   description={description}
+  //   //   onConfirm={confirm}
+  //   //   okText="Yes"
+  //   //   cancelText="No"
+  //   // >
+  // )
   const handleCancel = () => {
     setIsModalAddOpen(false);
     setIsModalEditOpen(false);
   };
+  console.log(dataSearch);
   const handleUpdate = info => {
-    console.log(infoUserEdit);
-    console.log(info);
+    if (info.IsActive === true) {
+      info.IsActive = 1;
+      info.Status = "Đang hoạt động"
+    }
+    else {
+      info.IsActive = 0;
+      info.Status = "Không hoạt động"
+    }
+    if (info.RoleID == 2) {
+      info.RoleGroup ="Nhóm Đại Lý"
+    }
+    else {
+      info.RoleGroup ="Nhóm Kỹ Thuật Viên"
+    }
     const data = {
-      UserGUID: infoUserEdit.UserGUID,
-      Birthday: moment(info.Birthday),
-      ...info,
-    };
+      UserName: info.UserName,
+      FullName: info.FullName,
+      Phone: info.Phone,
+      Email: info.Email,
+      Birthday: moment(info.Birthday).format("MM-DD-YYYY"),
+      Address:info.Address,
+      Status: info.Status,
+      RoleID: info.RoleID,
+      RoleGroup: info.RoleGroup,
+      IsActive:info.IsActive
+    }
+    console.log(data);
     dispatch(
       actions.editAccount(data, () => {
         dispatch(
-          actions.takeList(body, res => {
-            setDataSource(res.Users);
-            setDataSearch(res.Users);
+          actions.takeList(res => {
+            setDataSource(res);
+            setDataSearch(res);
           }),
         );
       }),
@@ -143,8 +189,7 @@ const HomePage = () => {
     setIsModalEditOpen(false);
   };
   const handleEdit = record => {
-    console.log(record);
-    const data = {
+    const info = {
       Address: record.Address,
       Birthday: moment(record.Birthday).format(),
       Email: record.Email,
@@ -152,13 +197,23 @@ const HomePage = () => {
       UserName: record.UserName,
       FullName: record.FullName,
       RoleID: record.RoleID,
-      UserGUID: record.UserGUID,
-      IsActive: record.IsActive,
+      IsActive: record.IsActive === 1,
     };
-    console.log(data);
-    setInfoUserEdit(data);
+    console.log(info);
+    setInfoUserEdit(info);
     setIsModalEditOpen(true);
   };
+  const handleDelete = info => {
+      const data = {
+        UserName :info.UserName
+      }
+      dispatch(actions.deleteAccount(data,() => {
+        dispatch(actions.takeList(res => {
+          setDataSource(res);
+          setDataSearch(res);
+        }))
+      }))
+  }
   const content = (
     <ContentDiv>
       <AvatarImg src={Avatar} />
@@ -219,7 +274,7 @@ const HomePage = () => {
             onClick={() => handleEdit(record)}
             alt=""
           />
-          <img src={HistoryButton} alt="" />
+          <img style={{cursor:"pointer"}} src={HistoryButton} onClick={() => handleDelete(record)} alt="" />
         </Space>
       ),
     },
@@ -227,6 +282,9 @@ const HomePage = () => {
       title: 'Trạng thái',
       key: 'Status',
       dataIndex: 'Status',
+      render:(_,record) => (
+        <div style={ record.Status === "Đang hoạt động"?{color : "#08b7dd"}:{color : "red"}}>{record.Status}</div>
+      )
     },
   ];
   return (
@@ -275,48 +333,8 @@ const HomePage = () => {
                   },
                   {
                     key: '2',
-                    icon: <img src={Dashboard} alt="" />,
+                    icon: <img src={Dashboard} alt=""  />,
                     label: 'Quản lý sản phẩm',
-                  },
-                  {
-                    key: '3',
-                    icon: <img src={Gift} alt="" />,
-                    label: 'Quản lý quà',
-                  },
-                  {
-                    key: '4',
-                    icon: <img src={UserGroup} alt="" />,
-                    label: 'Quản lý nhóm quyền',
-                  },
-                  {
-                    key: '5',
-                    icon: <img src={Chart} alt="" />,
-                    label: 'Thống kê',
-                  },
-                  {
-                    key: '6',
-                    icon: <img src={Card} alt="" />,
-                    label: 'Quản lý loại thẻ',
-                  },
-                  {
-                    key: '7',
-                    icon: <img src={Notification} alt="" />,
-                    label: 'Quản lý thông báo',
-                  },
-                  {
-                    key: '8',
-                    icon: <img src={Receipt} alt="" />,
-                    label: 'Quản lý đơn đặt hàng',
-                  },
-                  {
-                    key: '9',
-                    icon: <img src={HealthCheck} alt="" />,
-                    label: 'Quản lý Health Check',
-                  },
-                  {
-                    key: '10',
-                    icon: <img src={Book} alt="" />,
-                    label: 'Hướng dẫn sử dụng',
                   },
                 ]}
               />

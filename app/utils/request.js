@@ -24,7 +24,7 @@ function checkStatus(response) {
 }
 
 const instance = axios.create({
-  baseURL: `https://apiedl.bkav.com/api`,
+  baseURL: `http://localhost:3000`,
 });
 
 instance.defaults.timeout = 25000;

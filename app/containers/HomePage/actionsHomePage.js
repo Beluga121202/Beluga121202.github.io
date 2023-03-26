@@ -7,13 +7,12 @@ import {
   TAKEROLEGROUPSUCCESS,
   EDITACCOUNT,
   EDITACCOUNTSUCCESS,
-  ERRORREQUEST,
-} from './constantsHomePage';
+  ERRORREQUEST, DELETE, DELETESUCCESS
+} from "./constantsHomePage";
 
-export function takeList(body, callback) {
+export function takeList(callback) {
   return {
     type: TAKELIST,
-    body,
     callback,
   };
 }
@@ -37,18 +36,6 @@ export function addAccountSuccess(data) {
     data,
   };
 }
-export function takeRoleGroup(body) {
-  return {
-    type: TAKEROLEGROUP,
-    body,
-  };
-}
-export function takeRoleGroupSuccess(data) {
-  return {
-    type: TAKEROLEGROUPSUCCESS,
-    data,
-  };
-}
 export function editAccount(body, callback) {
   return {
     type: EDITACCOUNT,
@@ -66,5 +53,18 @@ export function errorRequest(error) {
   return {
     type: ERRORREQUEST,
     error,
+  };
+}
+export function deleteAccount(body, callback) {
+  return {
+    type: DELETE,
+    body,
+    callback,
+  };
+}
+export function deleteAccountSuccess(data) {
+  return {
+    type: DELETESUCCESS,
+    data,
   };
 }

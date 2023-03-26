@@ -6,7 +6,7 @@ import * as actions from './actionsLogin';
 import { axiosPost } from '../../utils/request';
 
 export function* handleLogin(action) {
-  const path = `/user/login`;
+  const path = `/auth/login`;
   try {
     const res = yield call(axiosPost, path, action.body);
     if (res.status === 200)

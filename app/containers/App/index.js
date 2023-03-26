@@ -12,6 +12,7 @@ import { ThemeProvider } from 'styled-components';
 
 import Login from '../Login/LoadableLogin';
 import HomePage from '../HomePage';
+import ProductsPage from '../Products';
 import ErrorPage from '../../res/components/ErrorPage';
 
 import GlobalStyle from '../../global-styles';
@@ -25,6 +26,7 @@ export default function App() {
           <Route exact path="/" component={Login} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/homepage" component={HomePage} />
+          <Route exact path="/products" component={ProductsPage} />
           <Route path="" render={() => <ErrorPage code="404" />} />
         </Switch>
         <GlobalStyle />
