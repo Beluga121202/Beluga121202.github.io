@@ -2,8 +2,8 @@ import produce from 'immer';
 import {
   ADDACCOUNT,
   ADDACCOUNTSUCCESS, DELETE, DELETESUCCESS, EDITACCOUNT, EDITACCOUNTSUCCESS,
-  TAKELIST,
-  TAKELISTSUCCESS,
+  TAKELISTACCOUNT,
+  TAKELISTSUCCESSACCOUNT,
   TAKEROLEGROUP,
   TAKEROLEGROUPSUCCESS
 } from "./constantsHomePage";
@@ -17,10 +17,10 @@ export const initialState = {
 export const takeListReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case TAKELIST:
+      case TAKELISTACCOUNT:
         draft.isLoading = true;
         break;
-      case TAKELISTSUCCESS:
+      case TAKELISTSUCCESSACCOUNT:
         draft.isLoading = false;
         draft.infoUser = action.data.data;
         break;

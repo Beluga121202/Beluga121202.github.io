@@ -1,24 +1,20 @@
 import {
-  TAKELIST,
-  TAKELISTSUCCESS,
   ADDACCOUNT,
   ADDACCOUNTSUCCESS,
-  TAKEROLEGROUP,
-  TAKEROLEGROUPSUCCESS,
   EDITACCOUNT,
   EDITACCOUNTSUCCESS,
-  ERRORREQUEST, DELETE, DELETESUCCESS
+  ERRORREQUEST, DELETE, DELETESUCCESS, TAKELISTACCOUNT, TAKELISTSUCCESSACCOUNT
 } from "./constantsHomePage";
 
-export function takeList(callback) {
+export function takeListHome(callback) {
   return {
-    type: TAKELIST,
+    type: TAKELISTACCOUNT,
     callback,
   };
 }
 export function takeListSuccess(data) {
   return {
-    type: TAKELISTSUCCESS,
+    type: TAKELISTSUCCESSACCOUNT,
     data,
   };
 }

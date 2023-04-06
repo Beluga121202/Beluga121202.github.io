@@ -10,7 +10,7 @@ import {
   DELETESUCCESS
 } from './constantsProducts';
 
-export function takeList( callback) {
+export function takeListProduct( callback) {
   return {
     type: TAKELIST,
     callback,

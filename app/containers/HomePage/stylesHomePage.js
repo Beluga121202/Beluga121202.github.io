@@ -5,7 +5,7 @@ const { Search } = Input;
 const { Header } = Layout;
 const LayoutCustom = styled(Layout)`
   &.ant-layout {
-    height: 100%;
+    height: 90vh;
   }
 `;
 const MenuCustom = styled(Menu)`

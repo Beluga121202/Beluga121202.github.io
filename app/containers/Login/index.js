@@ -14,8 +14,8 @@ import {
   AgreeCheckBoxFormLogin,
   ButtonLoginForm,
   ButtonCustom,
-  NavigationFormLogin,
-} from './stylesLogin';
+  NavigationFormLogin, Flex
+} from "./stylesLogin";
 import * as actions from './actionsLogin';
 import reducer from './reducerLogin';
 import saga from './sagaLogin';
@@ -36,7 +36,6 @@ const Login = () => {
     dispatch(
       actions.login(body, res => {
         SetIsCookie(Cookies.set(COOKIES.access_token, res.access_token));
-        localStorage.setItem('userGuid', res.user_guid);
       }),
     );
   };
@@ -46,7 +45,7 @@ const Login = () => {
   return (
     <>
       {isCookie ? (
-        <Redirect to="./HomePage" />
+        <Redirect to="/homepage" />
       ) : (
         <Container>
           <FormLogin
@@ -77,11 +76,6 @@ const Login = () => {
                 {
                   validator(_, value) {
                     const regExp = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-                    if (value === undefined) {
-                      return Promise.reject(
-                        new Error('Vui lòng nhập mật khẩu'),
-                      );
-                    }
                     if (regExp.test(value)) {
                       return Promise.resolve();
                     }
@@ -98,10 +92,6 @@ const Login = () => {
             <AgreeCheckBoxFormLogin
               name="remember"
               valuePropName="checked"
-              wrapperCol={{
-                offset: 8,
-                span: 16,
-              }}
               rules={[
                 {
                   validator: (_, value) =>
@@ -113,9 +103,7 @@ const Login = () => {
                 },
               ]}
             >
-              <Checkbox>
-                {t('login.Agree')} <a href="#">{t('login.TermOfUse')}</a>
-              </Checkbox>
+                <Checkbox style={{marginTop: "20px",fontFamily:"sans-serif"}}>{t('login.Agree')} <a href="#">{t('login.TermOfUse')}</a></Checkbox>
             </AgreeCheckBoxFormLogin>
             <ButtonLoginForm
               wrapperCol={{
@@ -123,7 +111,7 @@ const Login = () => {
                 span: 16,
               }}
             >
-              <ButtonCustom type="primary" onClick={onFinish}>
+              <ButtonCustom type="primary" htmlType="submit">
                 {t('login.LogIn')}
               </ButtonCustom>
             </ButtonLoginForm>

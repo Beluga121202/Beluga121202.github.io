@@ -10,6 +10,7 @@ import versions from './versions.json';
 import home from './home.json';
 import login from './login.json';
 import homepage from './HomePage.json';
+import products from './Products.json';
 export default {
   accountManagement,
   app,
@@ -23,4 +24,5 @@ export default {
   home,
   login,
   homepage,
+  products,
 };

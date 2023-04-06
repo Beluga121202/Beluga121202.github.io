@@ -45,6 +45,9 @@ const NavigationFormLogin = styled.div`
     justify-content: space-between;
   }
 `;
+const Flex = styled.div`
+  display: flex;
+`
 export {
   Container,
   FormLogin,
@@ -53,4 +56,5 @@ export {
   ButtonLoginForm,
   ButtonCustom,
   NavigationFormLogin,
+  Flex
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Layout, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -41,18 +41,10 @@ import Vector from '../../images/Vector.svg';
 import Separate from '../../images/separate.svg';
 import DLText from '../../images/DL.svg';
 import Avatar from '../../images/AvatarUser.svg';
-import UserGroup from '../../images/people_alt.svg';
-import Chart from '../../images/poll.svg';
-import Card from '../../images/payment.svg';
-import User from '../../images/perm_identity.svg';
-import Notification from '../../images/web.svg';
-import Receipt from '../../images/receipt_long.svg';
-import Book from '../../images/menu_book.svg';
-import Gift from '../../images/card_giftcard.svg';
-import HealthCheck from '../../images/insights.svg';
+import User from '../../images/user.svg';
 import Dashboard from '../../images/dashboard.svg';
 import EditButton from '../../images/edit.svg';
-import HistoryButton from '../../images/history.svg';
+import DeleteButton from '../../images/delete.jpg';
 import * as actions from './actionsHomePage';
 // import * as selectors from './selectorsHomePage';
 import { COOKIES } from '../../utils/constants';
@@ -60,12 +52,17 @@ import { REDUX_KEY } from './constantsHomePage';
 import reducer from './reducerHomePAge';
 import saga from './sagaHomePage';
 import { AddandEditModalHomePage } from './AddandEditModalHomePage';
+import { takeListHome } from "./actionsHomePage";
 const { Sider, Content } = Layout;
 const key = REDUX_KEY;
-const HomePage = () => {
+const HomePage = (props) => {
+  console.log(props);
+  const { menyKey, setMenuKey } = props;
+  console.log(props.menuKey);
+  const location = useLocation();
+  console.log(location.pathname);
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
-  // const infoUser = useSelector(selectors.selectInfoUser());
   const [collapsed, setCollapsed] = useState(false);
   const [isNotCookie, SetIsNotCookie] = useState(
     Cookies.get(COOKIES.access_token),
@@ -81,12 +78,13 @@ const HomePage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(
-      actions.takeList( res => {
+      actions.takeListHome( res => {
         setDataSource(res);
         setDataSearch(res);
       }),
     );
   }, []);
+  console.log(dataSource);
   const handleLogOut = () => {
     SetIsNotCookie(Cookies.remove(COOKIES.access_token));
   };
@@ -124,7 +122,7 @@ const HomePage = () => {
     dispatch(
       actions.addAccount(data, () => {
         dispatch(
-          actions.takeList(res => {
+          actions.takeListHome(res => {
             setDataSource(res);
             setDataSearch(res);
           }),
@@ -133,21 +131,10 @@ const HomePage = () => {
     );
     setIsModalAddOpen(false);
   };
-  // const handeleDelete = () => (
-  //   // <Popconfirm
-  //   //   placement="topLeft"
-  //   //   title={text}
-  //   //   description={description}
-  //   //   onConfirm={confirm}
-  //   //   okText="Yes"
-  //   //   cancelText="No"
-  //   // >
-  // )
   const handleCancel = () => {
     setIsModalAddOpen(false);
     setIsModalEditOpen(false);
   };
-  console.log(dataSearch);
   const handleUpdate = info => {
     if (info.IsActive === true) {
       info.IsActive = 1;
@@ -179,7 +166,7 @@ const HomePage = () => {
     dispatch(
       actions.editAccount(data, () => {
         dispatch(
-          actions.takeList(res => {
+          actions.takeListHome(res => {
             setDataSource(res);
             setDataSearch(res);
           }),
@@ -208,7 +195,7 @@ const HomePage = () => {
         UserName :info.UserName
       }
       dispatch(actions.deleteAccount(data,() => {
-        dispatch(actions.takeList(res => {
+        dispatch(actions.takeListHome(res => {
           setDataSource(res);
           setDataSearch(res);
         }))
@@ -231,6 +218,7 @@ const HomePage = () => {
       dataIndex: 'STT',
       key: 'STT',
       render: (value, item, index) => (page - 1) * 10 + index + 1,
+      width : '5%',
     },
     {
       title: 'Tên đăng nhập',
@@ -251,6 +239,7 @@ const HomePage = () => {
       title: 'Email',
       key: 'Email',
       dataIndex: 'Email',
+      width : '15%',
     },
     {
       title: 'Ngày Sinh',
@@ -260,8 +249,8 @@ const HomePage = () => {
     },
     {
       title: 'Nhóm Quyền',
-      key: 'RoleGroupName',
-      dataIndex: 'RoleGroupName',
+      key: 'RoleGroup',
+      dataIndex: 'RoleGroup',
     },
     {
       title: 'Chức năng',
@@ -274,7 +263,7 @@ const HomePage = () => {
             onClick={() => handleEdit(record)}
             alt=""
           />
-          <img style={{cursor:"pointer"}} src={HistoryButton} onClick={() => handleDelete(record)} alt="" />
+          <img style={{cursor:"pointer"}} src={DeleteButton} onClick={() => handleDelete(record)} alt="" />
         </Space>
       ),
     },
@@ -293,6 +282,7 @@ const HomePage = () => {
         <Redirect to="./Login" />
       ) : (
         <>
+          {props.menuKey === 2 ? <Redirect to="/products"/> : null}
           <HeaderCustom
             style={{
               padding: 0,
@@ -325,6 +315,11 @@ const HomePage = () => {
               <MenuCustom
                 mode="inline"
                 defaultSelectedKeys={['1']}
+                onClick = {(e) => {
+                  if (e.key ==='2')
+                    setMenuKey(2)
+                }
+                }
                 items={[
                   {
                     key: '1',

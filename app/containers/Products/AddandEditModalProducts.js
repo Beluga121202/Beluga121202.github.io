@@ -82,7 +82,7 @@ export function AddandEditModalProducts({
               { type: 'string', min: 10, max: 11 },
             ]}
           >
-            <Input placeholder={t('homepage.Phone')} />
+            <Input placeholder={t('products.Phone')} />
           </Form.Item>
 
           <Form.Item
@@ -94,11 +94,11 @@ export function AddandEditModalProducts({
               },
             ]}
           >
-            <Input placeholder={t('homepage.Email')} />
+            <Input placeholder={t('products.Email')} />
           </Form.Item>
 
           <Form.Item name="Address">
-            <Input placeholder={t('homepage.Address')} />
+            <Input placeholder={t('products.Address')} />
           </Form.Item>
 
           <Form.Item
@@ -123,7 +123,7 @@ export function AddandEditModalProducts({
           <Form.Item name="IsActive" label="Trạng thái">
             <RadioModalGroup>
               <RadioModal value>Còn thời hạn</RadioModal>
-              <RadioModal value={false}>Hết hạn</RadioModal>
+              <RadioModal value={false} style={{fontFamily:"sans-serif"}}>Hết hạn</RadioModal>
             </RadioModalGroup>
           </Form.Item>
           <Form.Item style={{ textAlign: 'center' }}>

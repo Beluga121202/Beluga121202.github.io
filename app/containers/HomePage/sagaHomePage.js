@@ -3,8 +3,8 @@ import { axiosPost, axiosPut } from '../../utils/request';
 import * as actions from './actionsHomePage';
 import * as constants from './constantsHomePage';
 
-export function* handleTakeList(action) {
-  const path = 'accounts/list';
+export function* handleTakeListAccount(action) {
+  const path = '/accounts/listAccounts';
   try {
     const res = yield call(axiosPost, path, action.body);
     if (res.status === 200)
@@ -14,7 +14,7 @@ export function* handleTakeList(action) {
   }
 }
 export default function* watchAction() {
-  yield takeLatest(constants.TAKELIST, handleTakeList);
+  yield takeLatest(constants.TAKELISTACCOUNT, handleTakeListAccount);
   yield takeLatest(constants.ADDACCOUNT, handleAddAccount);
   yield takeLatest(constants.EDITACCOUNT, handleEditAccount);
   yield takeLatest(constants.DELETE, handleDeleteAccount);

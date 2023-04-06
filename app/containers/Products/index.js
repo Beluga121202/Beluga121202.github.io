@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Layout, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect, useHistory, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -41,20 +41,11 @@ import Vector from '../../images/Vector.svg';
 import Separate from '../../images/separate.svg';
 import DLText from '../../images/DL.svg';
 import Avatar from '../../images/AvatarUser.svg';
-import UserGroup from '../../images/people_alt.svg';
-import Chart from '../../images/poll.svg';
-import Card from '../../images/payment.svg';
-import User from '../../images/perm_identity.svg';
-import Notification from '../../images/web.svg';
-import Receipt from '../../images/receipt_long.svg';
-import Book from '../../images/menu_book.svg';
-import Gift from '../../images/card_giftcard.svg';
-import HealthCheck from '../../images/insights.svg';
+import User from '../../images/user.svg';
 import Dashboard from '../../images/dashboard.svg';
 import EditButton from '../../images/edit.svg';
-import HistoryButton from '../../images/history.svg';
+import DeleteButton from '../../images/delete.jpg';
 import * as actions from './actionsProducts';
-// import * as selectors from './selectorsHomePage';
 import { COOKIES } from '../../utils/constants';
 import { REDUX_KEY } from './constantsProducts';
 import reducer from './reducerProducts';
@@ -62,7 +53,10 @@ import saga from './sagaProducts';
 import { AddandEditModalProducts } from './AddandEditModalProducts';
 const { Sider, Content } = Layout;
 const key = REDUX_KEY;
-const ProductsPage = () => {
+const ProductsPage = (props) => {
+  const { menyKey, setMenuKey } = props;
+  const location = useLocation();
+  console.log(location.pathname);
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
   // const infoUser = useSelector(selectors.selectInfoUser());
@@ -81,12 +75,13 @@ const ProductsPage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(
-      actions.takeList( res => {
+      actions.takeListProduct( res => {
         setDataSource(res);
         setDataSearch(res);
       }),
     );
   }, []);
+  console.log(dataSource);
   const handleLogOut = () => {
     SetIsNotCookie(Cookies.remove(COOKIES.access_token));
   };
@@ -117,7 +112,7 @@ const ProductsPage = () => {
     dispatch(
           actions.addProducts(data, () => {
             dispatch(
-              actions.takeList(res => {
+              actions.takeListProduct(res => {
                 setDataSource(res);
                 setDataSearch(res);
               }),
@@ -130,7 +125,6 @@ const ProductsPage = () => {
     setIsModalAddOpen(false);
     setIsModalEditOpen(false);
   };
-  console.log(dataSearch);
   const handleUpdate = info => {
     if (info.IsActive === true) {
       info.IsActive = 1;
@@ -185,7 +179,7 @@ const ProductsPage = () => {
       UserName :info.UserName
     }
     dispatch(actions.deleteProducts(data,() => {
-      dispatch(actions.takeList(res => {
+      dispatch(actions.takeListProduct(res => {
         setDataSource(res);
         setDataSearch(res);
       }))
@@ -194,11 +188,11 @@ const ProductsPage = () => {
   const content = (
     <ContentDiv>
       <AvatarImg src={Avatar} />
-      <UserName>{t('homepage.UserName')}</UserName>
-      <CompanyName>{t('homepage.CompanyName')}</CompanyName>
-      <AccountCreatedBy>{t('homepage.AccountCreatedBy')}</AccountCreatedBy>
+      <UserName>{t('products.UserName')}</UserName>
+      <CompanyName>{t('products.CompanyName')}</CompanyName>
+      <AccountCreatedBy>{t('products.AccountCreatedBy')}</AccountCreatedBy>
       <LogOutBtnDiv>
-        <LogOutBtn onClick={handleLogOut}>{t('homepage.LogOut')}</LogOutBtn>
+        <LogOutBtn onClick={handleLogOut}>{t('products.LogOut')}</LogOutBtn>
       </LogOutBtnDiv>
     </ContentDiv>
   );
@@ -246,7 +240,7 @@ const ProductsPage = () => {
             onClick={() => handleEdit(record)}
             alt=""
           />
-          <img style={{cursor:"pointer"}} src={HistoryButton} onClick={() => handleDelete(record)} alt="" />
+          <img style={{cursor:"pointer"}} src={DeleteButton} onClick={() => handleDelete(record)} alt="" />
         </Space>
       ),
     },
@@ -259,16 +253,13 @@ const ProductsPage = () => {
       )
     },
   ];
-
-  // const onChangePage = () => {
-  //   <Redirect to='./Homepage'/>
-  // }
   return (
     <>
       {!isNotCookie ? (
         <Redirect to="./Login" />
       ) : (
         <>
+          {props.menuKey === 1 ? <Redirect to="/homepage"/> : null}
           <HeaderCustom
             style={{
               padding: 0,
@@ -300,10 +291,11 @@ const ProductsPage = () => {
             <Sider trigger={null} collapsible collapsed={collapsed}>
               <MenuCustom
                 mode="inline"
-                defaultSelectedKeys={['1']}
-                onClick = {({key}) => {
-                  selectedKeys(key);
-              }
+                defaultSelectedKeys={['2']}
+                onClick = {(e) => {
+                  if (e.key ==='1')
+                    setMenuKey(1);
+                }
                 }
                 items={[
                   {
@@ -313,7 +305,7 @@ const ProductsPage = () => {
                   },
                   {
                     key: '2',
-                    icon: <img src={Dashboard} alt="" />,
+                    icon: <img src={Dashboard} alt=""  />,
                     label: 'Quản lý sản phẩm',
                   },
                 ]}
@@ -321,7 +313,7 @@ const ProductsPage = () => {
             </Sider>
             <LayOutContent>
               <SeachCustom
-                placeholder={t('homepage.InputSeachText')}
+                placeholder={t('products.InputSeachText')}
                 allowClear
                 style={{
                   width: 600,
@@ -345,11 +337,11 @@ const ProductsPage = () => {
               >
                 <ContentHeader>
                   <TextContentHeader>
-                    {t('homepage.ManageAcoount')} {dataSource.length}
+                    {t('products.ManageProducts')} {dataSource.length}
                   </TextContentHeader>
                   <ButtonAdd onClick={showModal}>
                     <PlusOutlined />
-                    {t('homepage.AddNew')}
+                    {t('products.AddNew')}
                   </ButtonAdd>
                 </ContentHeader>
                 <TableCustom
@@ -366,14 +358,14 @@ const ProductsPage = () => {
                 <AddandEditModalProducts
                   onClickCancel={handleCancel}
                   onClickOk={handleOk}
-                  tittleModal={t('homepage.AddNewAccount')}
+                  tittleModal={t('products.AddNewProducts')}
                 />
               )}
               {isModalEditOpen && (
                 <AddandEditModalProducts
                   onClickCancel={handleCancel}
                   onClickOk={handleUpdate}
-                  tittleModal={t('homepage.EditAccount')}
+                  tittleModal={t('products.EditAccount')}
                   infoEdit={infoUserEdit}
                 />
               )}
